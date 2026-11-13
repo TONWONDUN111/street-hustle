@@ -182,6 +182,14 @@ body.touch #deal{bottom:calc(16px + env(safe-area-inset-bottom));top:auto;left:c
 }
 @media (orientation:portrait) and (max-width:600px){#controls .cl,#controls .cr{position:relative}#controls [data-k=fire],#controls [data-k=nitro]{position:absolute;margin-bottom:0;bottom:96px}#controls [data-k=fire]{right:96px}#controls [data-k=nitro]{right:14px}#hopbtn{position:absolute;bottom:84px;left:82px}body.touch #deal{bottom:calc(185px + env(safe-area-inset-bottom))}}
 body.touch #panel,body.touch .glass{-webkit-backdrop-filter:none;backdrop-filter:none}body.touch #panel{background:rgba(8,10,20,.97)}body.touch .glass{background:rgba(10,12,26,.8)}
+#cashBtn{position:absolute;right:10px;top:calc(300px + env(safe-area-inset-top));pointer-events:auto;padding:9px 12px;border-radius:20px;border:1px solid #00ff88;background:rgba(0,60,30,.8);color:#b9ffd9;font-weight:900;font-size:12px}
+@media (max-width:600px){#cashBtn{top:calc(254px + env(safe-area-inset-top))}}
+#cshop .pk{display:flex;align-items:center;justify-content:space-between;width:100%;margin:0 0 10px;padding:14px 16px;border-radius:14px;border:1px solid rgba(0,255,136,.35);background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,0,0,.35));color:#fff;font-weight:900;font-size:17px;text-align:left}
+#cshop .pk small{display:block;font-size:11px;color:#8fa0c8;font-weight:700}
+#cshop .pk .pr{padding:8px 14px;border-radius:10px;background:linear-gradient(135deg,#00c853,#00a152);font-size:15px}
+#cshop .pk .tag{font-size:10px;color:#111;background:#ffd27a;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+#cshop{background:rgba(4,6,16,.97);z-index:30}
+#cshop .fine{font-size:11px;color:#8fa0c8;margin-top:6px}#cshop .fine a{color:#9eefff}
 </style>
 </head>
 <body>
@@ -189,7 +197,7 @@ body.touch #panel,body.touch .glass{-webkit-backdrop-filter:none;backdrop-filter
   <div id="stats" class="glass"><div id="cash">$0</div><div id="repline"></div><div id="stars"></div><div class="heatbar"><i id="heat"></i></div><div class="hbar"><i id="carhp"></i></div><div id="inv"></div><div id="gunline"></div><div id="turfline"></div></div>
   <div id="speedo" class="glass"><div id="mph">0</div><small>MPH</small><div id="hpline"></div><div class="nbar" id="nwrap"><i id="nitro"></i></div></div>
   <canvas id="map" width="150" height="150" class="glass"></canvas>
-  <button id="qBtn" aria-label="Graphics quality">HI</button><button id="muteBtn" aria-label="Mute">🔊</button><button id="turfBtn" class="hidden">🏴 CREW</button><button id="jobsBtn">📋 JOBS</button>
+  <button id="qBtn" aria-label="Graphics quality">HI</button><button id="muteBtn" aria-label="Mute">🔊</button><button id="turfBtn" class="hidden">🏴 CREW</button><button id="jobsBtn">📋 JOBS</button><button id="cashBtn">💵 CASH</button>
 </div>
 <div id="raidArrow" class="hidden"><svg id="raArr" viewBox="0 0 64 64"><path d="M32 4 L56 44 L38 38 L38 60 L26 60 L26 38 L8 44 Z" fill="#ff1744" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg><span id="raTxt"></span></div>
 <div id="toast"></div><div id="hurt"></div>
@@ -231,6 +239,7 @@ body.touch #panel,body.touch .glass{-webkit-backdrop-filter:none;backdrop-filter
       <li id="kbhelp"><b>Keys:</b> WASD / arrows · Shift = N₂O · Space = e-brake · F = fire · E = sell · Q = pass</li>
     </ul>
     <button id="startBtn" class="big" disabled>LOADING…</button>
+    <button id="tCashBtn" class="link" style="color:#00ff88;font-weight:800;letter-spacing:1px">💵 GET CASH</button>
     <button id="newBtn" class="link">New game (reset save)</button>
     <button id="appBtn" class="link" style="display:none;margin-top:10px;color:#00ff88;font-weight:800;letter-spacing:1px">📲 GET THE APP</button>
     <span class="age17">17+ · FICTIONAL</span>
@@ -8485,6 +8494,32 @@ $('startBtn').addEventListener('click',()=>{initAudio();if(AC&&AC.state==='suspe
  if(CI>0)setTimeout(()=>toast(`🏙 ${CITY.name} · ${TURFS.length} turfs to take`,'#00e5ff'),2600);
  setTimeout(()=>toast(invTotal()?'Find a buyer — look for the floating diamonds':'Head to the green STASH HOUSE ring','#39ff14'),400);});
 $('newBtn').addEventListener('click',()=>{if(!confirm('Erase your save and start over?'))return;window.__shReset=true;try{localStorage.removeItem('street_hustle_v1');localStorage.removeItem('street_hustle_v1_backup');}catch(e){}location.reload();});
+/* ================= CASH SHOP (real-money in-game cash · Stripe) ================= */
+const CPACKS=[['p1',.99,30000],['p5',4.99,175000,'POPULAR'],['p10',9.99,400000],['p20',19.99,900000,'BEST VALUE'],['p50',49.99,2500000,'KINGPIN']];
+let cshopPaused=false,cBusy=false;
+function openCashShop(){const el=$('cshop');$('cmsg').textContent='';
+ $('cpacks').innerHTML=CPACKS.map(([k,pr,c,t])=>`<button class="pk" data-pk="${k}"><span>$${c.toLocaleString()}${t?`<span class="tag">${t}</span>`:''}<small>${Math.round(c/pr/1000)}K cash per $1</small></span><span class="pr">$${pr}</span></button>`).join('');
+ if(running&&!paused){paused=true;cshopPaused=true;}el.classList.remove('hidden');claimPaid();}
+function closeCashShop(){$('cshop').classList.add('hidden');if(cshopPaused){paused=false;cshopPaused=false;}}
+async function buyPack(k){if(cBusy)return;cBusy=true;ids();$('cmsg').textContent='Opening secure checkout…';
+ try{const r=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:S.pid,secret:S.psec,pack:k})});const j=await r.json().catch(()=>({}));
+  if(r.ok&&j.url){save();location.href=j.url;return;}
+  $('cmsg').textContent=j.error==='payments_not_configured'?'Cash Shop opens soon — check back!':'Couldn\'t start checkout — try again.';}
+ catch(e){$('cmsg').textContent='No connection — try again.';}cBusy=false;}
+let claimBusy=false;
+async function claimPaid(){if(claimBusy||!S||!S.pid||!S.psec)return 0;claimBusy=true;let n=0;
+ try{n=Number(await rpc('sh_claim_cash',{p_id:S.pid,p_secret:S.psec}))||0;}catch(e){}claimBusy=false;
+ if(n>0){S.cash+=n;save();cashSound();toast(`💵 +$${n.toLocaleString()} cash added — thanks for supporting the game!`,'#5dff9a');if(typeof renderPanel==='function'&&panelMode)try{renderPanel();}catch(e){}}
+ else if(n<0){S.cash=Math.max(0,S.cash+n);save();toast('Refunded purchase removed from your cash','#ff5c7a');}
+ return n;}
+$('cashBtn').addEventListener('click',openCashShop);$('tCashBtn').addEventListener('click',openCashShop);$('cClose').addEventListener('click',closeCashShop);
+$('cpacks').addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(b)buyPack(b.dataset.pk);});
+(function(){const q=new URLSearchParams(location.search);
+ if(q.has('paid')||q.has('canceled'))history.replaceState(null,'',location.pathname);
+ if(q.has('paid')){toast('💳 Payment received — adding your cash…','#5dff9a');let tries=0;const go=async()=>{const n=await claimPaid();if(n<=0&&++tries<8)setTimeout(go,2500);else if(n<=0)toast('Cash is on the way — reopen the game in a minute','#ffd27a');};setTimeout(go,800);}
+ else setTimeout(claimPaid,3000);
+ setInterval(claimPaid,120000);})();
+
 }
 window.MODELS={chars:{},cars:{},anims:null};
 (function boot(){let started=false;const go=()=>{if(started)return;started=true;try{GAME();}catch(e){console.error(e);if(window.SHDiag)SHDiag.log("boot",e,1);}};
@@ -8561,5 +8596,9 @@ window.MODELS={chars:{},cars:{},anims:null};
  document.getElementById('appClose').addEventListener('click',()=>guide.classList.add('hidden'));
 })();
 </script>
+<div id="cshop" class="overlay hidden"><div class="tcard"><h1 style="font-size:38px">CASH <span>SHOP</span> 💵</h1><p class="sub">Stack paper fast — dream cars, businesses, the Nightclub, the minigun.</p>
+ <div id="cpacks"></div><p class="sub" id="cmsg" style="min-height:18px"></p>
+ <button id="cClose" class="link">Back to the streets</button>
+ <p class="fine">In-game cash only. No real-world value, can't be cashed out or traded. All sales final. Secure checkout by Stripe. 17+. <a href="terms.html" target="_blank">Terms</a></p></div></div>
 </body>
 </html>
