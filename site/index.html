@@ -181,9 +181,15 @@ body.touch #deal{bottom:calc(16px + env(safe-area-inset-bottom));top:auto;left:c
 .tcard h1{font-size:32px}
 }
 @media (orientation:portrait) and (max-width:600px){#controls .cl,#controls .cr{position:relative}#controls [data-k=fire],#controls [data-k=nitro]{position:absolute;margin-bottom:0;bottom:96px}#controls [data-k=fire]{right:96px}#controls [data-k=nitro]{right:14px}#hopbtn{position:absolute;bottom:84px;left:82px}body.touch #deal{bottom:calc(185px + env(safe-area-inset-bottom))}}
+/* touch spacing: keep gas / brake / steering apart so thumbs don't hit the wrong one */
+#controls .cl{gap:26px}#controls .cr{gap:16px}#controls [data-k=up]{margin-left:14px}
+@media (orientation:landscape) and (max-height:520px){#controls .cl{gap:22px}#controls .cr{gap:14px}#controls [data-k=up]{margin-left:12px}}
+@media (orientation:portrait) and (max-width:600px){#controls{padding:0 12px}#controls button{width:62px;height:62px;font-size:12px}#controls [data-k=up]{width:76px;height:76px;margin-left:8px}#controls .cl{gap:18px}#controls .cr{gap:12px}#controls [data-k=fire],#controls [data-k=nitro]{width:52px;height:52px}#hopbtn{left:46px!important}}
+@media (orientation:portrait) and (max-width:360px){#controls button{width:56px;height:56px}#controls [data-k=up]{width:66px;height:66px;margin-left:6px}#controls .cl{gap:12px}#controls .cr{gap:10px}#controls [data-k=fire],#controls [data-k=nitro]{width:48px;height:48px}}
 body.touch #panel,body.touch .glass{-webkit-backdrop-filter:none;backdrop-filter:none}body.touch #panel{background:rgba(8,10,20,.97)}body.touch .glass{background:rgba(10,12,26,.8)}
 #cashBtn{position:absolute;right:10px;top:calc(300px + env(safe-area-inset-top));pointer-events:auto;padding:9px 12px;border-radius:20px;border:1px solid #00ff88;background:rgba(0,60,30,.8);color:#b9ffd9;font-weight:900;font-size:12px}
 @media (max-width:600px){#cashBtn{top:calc(254px + env(safe-area-inset-top))}}
+@media (orientation:landscape) and (max-height:520px){#cashBtn{top:calc(154px + env(safe-area-inset-top));right:calc(92px + env(safe-area-inset-right));padding:7px 10px;font-size:11px}}
 #cshop .pk{display:flex;align-items:center;justify-content:space-between;width:100%;margin:0 0 10px;padding:14px 16px;border-radius:14px;border:1px solid rgba(0,255,136,.35);background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,0,0,.35));color:#fff;font-weight:900;font-size:17px;text-align:left}
 #cshop .pk small{display:block;font-size:11px;color:#8fa0c8;font-weight:700}
 #cshop .pk .pr{padding:8px 14px;border-radius:10px;background:linear-gradient(135deg,#00c853,#00a152);font-size:15px}
