@@ -6,7 +6,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
-  const key = Netlify.env.get('STRIPE_SECRET_KEY');
+  const key = Netlify.env.get('STRIPE_SECRET_KEY') || Netlify.env.get('STREET_GANG_KEY');
   if (!key) return Response.json({ error: 'payments_not_configured' }, { status: 503 });
 
   let body;
