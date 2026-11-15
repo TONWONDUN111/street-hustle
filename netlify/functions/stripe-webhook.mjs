@@ -25,7 +25,7 @@ async function sb(path, init) {
 export default async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
   const raw = await req.text();
-  if (!verify(raw, req.headers.get('stripe-signature'), Netlify.env.get('STRIPE_WEBHOOK_SECRET')))
+  if (!verify(raw, req.headers.get('stripe-signature'), (Netlify.env.get('STRIPE_WEBHOOK_SECRET') || Netlify.env.get('STRIPE_HOOK'))))
     return new Response('bad signature', { status: 400 });
 
   const ev = JSON.parse(raw);
