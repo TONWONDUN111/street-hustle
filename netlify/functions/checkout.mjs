@@ -21,7 +21,7 @@ export default async (req) => {
   const f = new URLSearchParams({
     mode: 'payment',
     client_reference_id: pid,
-    success_url: `${origin}/?paid={CHECKOUT_SESSION_ID}`,
+    success_url: `${origin}/?paid={CHECKOUT_SESSION_ID}&v=${p.cents}&pk=${pack}`,
     cancel_url: `${origin}/?canceled=1`,
     'line_items[0][quantity]': '1',
     'line_items[0][price_data][currency]': 'usd',

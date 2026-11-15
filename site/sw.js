@@ -26,9 +26,9 @@ self.addEventListener('fetch', e => {
   const isPage = req.mode === 'navigate' || (sameOrigin && (url.pathname === '/' || url.pathname.endsWith('/index.html')));
   if (isPage) {
     e.respondWith(fetch(req).then(r => {
-      if (r.ok) { const cp = r.clone(); caches.open(VERSION).then(c => c.put('index.html', cp)); }
+      if (r.ok && (url.pathname === '/' || url.pathname.endsWith('/index.html'))) { const cp = r.clone(); caches.open(VERSION).then(c => c.put('index.html', cp)); }
       return r;
-    }).catch(() => caches.match('index.html').then(r => r || caches.match('./'))));
+    }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('index.html')).then(r => r || caches.match('./'))));
     return;
   }
   // stale-while-revalidate for assets
