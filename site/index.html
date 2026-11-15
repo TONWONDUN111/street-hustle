@@ -8501,7 +8501,7 @@ $('startBtn').addEventListener('click',()=>{initAudio();if(AC&&AC.state==='suspe
  setTimeout(()=>toast(invTotal()?'Find a buyer — look for the floating diamonds':'Head to the green STASH HOUSE ring','#39ff14'),400);});
 $('newBtn').addEventListener('click',()=>{if(!confirm('Erase your save and start over?'))return;window.__shReset=true;try{localStorage.removeItem('street_hustle_v1');localStorage.removeItem('street_hustle_v1_backup');}catch(e){}location.reload();});
 /* ================= CASH SHOP (real-money in-game cash · Stripe) ================= */
-const CPACKS=[['p1',.99,30000],['p5',4.99,175000,'POPULAR'],['p10',9.99,400000],['p20',19.99,900000,'BEST VALUE'],['p50',49.99,2500000,'KINGPIN']];
+const CPACKS=[['p1',.99,60000],['p5',4.99,325000,'POPULAR'],['p10',9.99,700000],['p20',19.99,1500000,'BEST VALUE'],['p50',49.99,4000000,'KINGPIN']];
 let cshopPaused=false,cBusy=false;
 function openCashShop(){const el=$('cshop');$('cmsg').textContent='';
  $('cpacks').innerHTML=CPACKS.map(([k,pr,c,t])=>`<button class="pk" data-pk="${k}"><span>$${c.toLocaleString()}${t?`<span class="tag">${t}</span>`:''}<small>${Math.round(c/pr/1000)}K cash per $1</small></span><span class="pr">$${pr}</span></button>`).join('');
