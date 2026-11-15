@@ -35,11 +35,18 @@ export default async (req) => {
       const m = o.metadata || {};
       const p = PACKS[m.pack];
       if (!p || !m.pid || !m.sec_hash) return new Response('ignored', { status: 200 });
-      if (o.amount_total !== p.cents) { console.error('amount mismatch', o.id); return new Response('amount mismatch', { status: 200 }); }
+      // Compare pre-tax USD subtotal (Adaptive Pricing / Managed Payments change amount_total + currency).
+      const usdSub = o.currency_conversion ? o.currency_conversion.amount_subtotal : (o.currency === 'usd' ? o.amount_subtotal : null);
+      if (usdSub !== p.cents) { console.error('amount mismatch', o.id, usdSub); return new Response('amount mismatch', { status: 200 }); }
       await sb('sh_purchases?on_conflict=session_id', {
         method: 'POST',
         headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
         body: JSON.stringify({ session_id: o.id, pid: m.pid, sec_hash: m.sec_hash, pack: m.pack, cash: p.cash, amount_cents: p.cents, payment_intent: o.payment_intent || null }),
+      });
+    } else if (ev.type === 'charge.dispute.created' && o.payment_intent) {
+      // Chargeback: claw back the cash the same way as a refund.
+      await sb(`sh_purchases?payment_intent=eq.${encodeURIComponent(o.payment_intent)}`, {
+        method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ status: 'refunded' }),
       });
     } else if (ev.type === 'charge.refunded' && o.refunded && o.payment_intent) {
       await sb(`sh_purchases?payment_intent=eq.${encodeURIComponent(o.payment_intent)}`, {
