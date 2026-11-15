@@ -41,7 +41,7 @@ export default async (req) => {
     body: f,
   });
   const j = await r.json();
-  if (!r.ok) { console.error('stripe', j?.error?.message); return Response.json({ error: 'stripe_error', code: j?.error?.code || j?.error?.type || null }, { status: 502 }); }
+  if (!r.ok) { console.error('stripe', j?.error?.message); return Response.json({ error: 'stripe_error', code: j?.error?.code || j?.error?.type || null, message: String(j?.error?.message || '').replace(/(sk|rk|pk)_(live|test)_[A-Za-z0-9*]+/g, '[key]').slice(0, 200) }, { status: 502 }); }
   return Response.json({ url: j.url });
 };
 
