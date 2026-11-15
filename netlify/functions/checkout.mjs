@@ -27,6 +27,8 @@ export default async (req) => {
     'line_items[0][price_data][currency]': 'usd',
     'line_items[0][price_data][unit_amount]': String(p.cents),
     'line_items[0][price_data][product_data][name]': `Street Hustle Gang — ${p.name}`,
+    // Required by Managed Payments. Video Games - streamed - non subscription - with limited rights.
+    'line_items[0][price_data][product_data][tax_code]': Netlify.env.get('STRIPE_TAX_CODE') || 'txcd_10201003',
     'line_items[0][price_data][product_data][description]': 'In-game currency. No real-world value, not redeemable for money. All sales final.',
     'metadata[pid]': pid,
     'metadata[sec_hash]': secHash,
