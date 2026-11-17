@@ -58,6 +58,18 @@ button{font-family:inherit;cursor:pointer}
 #raArr{width:64px;height:64px;filter:drop-shadow(0 0 10px #ff1744)}
 #raTxt{margin-top:2px;font-weight:900;font-size:13px;letter-spacing:1px;color:#fff;background:rgba(150,0,20,.75);padding:3px 9px;border-radius:8px;white-space:nowrap}
 @media (max-width:600px){#raidArrow{top:calc(78px + env(safe-area-inset-top))}#raArr{width:52px;height:52px}}
+#tutArrow{position:fixed;left:50%;top:calc(96px + env(safe-area-inset-top));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:3}
+#tutArr{width:58px;height:58px;filter:drop-shadow(0 0 10px #39ff14)}
+#tutLbl{margin-top:2px;font-weight:900;font-size:13px;letter-spacing:1px;color:#fff;background:rgba(0,90,30,.8);padding:3px 9px;border-radius:8px;white-space:nowrap}
+#tutBox{transition:opacity .2s;position:fixed;left:50%;transform:translateX(-50%);top:calc(190px + env(safe-area-inset-top));width:min(88vw,380px);padding:10px 12px;border-radius:14px;background:rgba(6,20,12,.88);border:2px solid #39ff14;box-shadow:0 0 18px rgba(57,255,20,.35);color:#fff;font-size:14px;line-height:1.35;text-align:center;z-index:40;pointer-events:auto}
+#tutBox.dim{opacity:.12}
+#tutBox.inpanel{top:auto;bottom:calc(14px + env(safe-area-inset-bottom))}
+#tutBox .ts{font-size:11px;font-weight:900;letter-spacing:2px;color:#39ff14;margin-bottom:3px}
+#tutBox button{margin-top:6px;background:none;border:1px solid rgba(255,255,255,.25);color:#9fb;border-radius:10px;font-size:11px;padding:3px 10px}
+.tutGlow{animation:tutG .8s infinite alternate;outline:3px solid #39ff14!important;outline-offset:2px}
+@keyframes tutG{from{box-shadow:0 0 4px #39ff14}to{box-shadow:0 0 22px #39ff14}}
+@media (max-width:600px){#tutArrow{top:calc(78px + env(safe-area-inset-top))}#tutArr{width:48px;height:48px}#tutBox{top:calc(300px + env(safe-area-inset-top));font-size:13px}}
+@media (orientation:landscape) and (max-height:500px){#tutArrow{top:calc(64px + env(safe-area-inset-top))}#tutArr{width:38px;height:38px}#tutLbl{font-size:11px}#tutBox{top:calc(118px + env(safe-area-inset-top));width:min(46vw,340px);font-size:12px;padding:7px 10px}#tutBox.inpanel{top:auto}}
 #hidebar{position:fixed;left:50%;top:54%;transform:translateX(-50%);width:200px;height:10px;border-radius:5px;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid #b388ff}
 #hidebar i{display:block;height:100%;width:0;background:#b388ff}
 #hidelbl{position:fixed;left:50%;top:calc(54% - 24px);transform:translateX(-50%);font-weight:900;color:#b388ff;letter-spacing:3px;font-size:13px;text-shadow:0 0 8px #000;white-space:nowrap}
@@ -209,6 +221,8 @@ body.touch #panel,body.touch .glass{-webkit-backdrop-filter:none;backdrop-filter
   <button id="qBtn" aria-label="Graphics quality">HI</button><button id="muteBtn" aria-label="Mute">🔊</button><button id="turfBtn" class="hidden">🏴 CREW</button><button id="jobsBtn">📋 JOBS</button><button id="cashBtn">💵 CASH</button>
 </div>
 <div id="raidArrow" class="hidden"><svg id="raArr" viewBox="0 0 64 64"><path d="M32 4 L56 44 L38 38 L38 60 L26 60 L26 38 L8 44 Z" fill="#ff1744" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg><span id="raTxt"></span></div>
+<div id="tutArrow" class="hidden"><svg id="tutArr" viewBox="0 0 64 64"><path d="M32 4 L56 44 L38 38 L38 60 L26 60 L26 38 L8 44 Z" fill="#39ff14" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg><span id="tutLbl"></span></div>
+<div id="tutBox" class="hidden"><div class="ts" id="tutStep"></div><div id="tutMsg"></div><button id="tutSkip">Skip tutorial</button></div>
 <div id="toast"></div><div id="hurt"></div>
 <div id="bustlbl" class="hidden">GETTING CUFFED</div>
 <div id="bustbar" class="hidden"><i id="bustfill"></i></div>
@@ -6578,6 +6592,7 @@ if(!S.v2){S.v2=1;S.cash+=1500;}
 if(!S.eq)S.eq={};if(S.eq.gcol==null||!GCOLORS[S.eq.gcol])S.eq.gcol=0;if(S.rep==null)S.rep=0;if(!S.boats)S.boats=[];if(S.boat==null)S.boat=-1;if(S.bcrew==null)S.bcrew=0;if(!S.ware)S.ware={};if(S.trips==null)S.trips=0;if(S.ricoBought==null)S.ricoBought=S.trips>0?1:0;
 if(S.cargo){if(!S.wcost||typeof S.wcost!=='object')S.wcost={};for(const k in S.cargo){if(!PMAP[k])continue;const n=S.cargo[k]|0;if(n>0){addCost(S.wcost,S.ware,k,n,(S.ccost&&S.ccost[k])||PMAP[k].buy*.5);S.ware[k]=(S.ware[k]||0)+n;}}S.cargo=null;S.ccost=null;}if(S.repTotal==null)S.repTotal=S.rep;if(!S.daily)S.daily={last:'',streak:0};if(!S.jobs)S.jobs={day:'',list:[]};if(!S.st)S.st={};
 if(S.rockets==null)S.rockets=0;if(!S.icost||typeof S.icost!=='object')S.icost={};if(!S.wcost||typeof S.wcost!=='object')S.wcost={};if(!S.biz||typeof S.biz!=='object'||Array.isArray(S.biz))S.biz={};if(!S.esc||typeof S.esc!=='object')S.esc={own:[],on:-1};if(!Array.isArray(S.esc.own))S.esc.own=[];S.esc.own=S.esc.own.filter((v,i,a)=>(v===0||v===1||v===2)&&a.indexOf(v)===i);if(S.esc.own.indexOf(S.esc.on)<0)S.esc.on=-1;if(S.btr&&typeof S.btr==='object'){S.btr.phase='go';S.btr.left=Math.max(60,+S.btr.left||0);S.btr.away=0;/* back from a reload/quit: always a fresh window to respond */}else S.btr=null;
+if(S.tut==null)S.tut=(S.deals>0||S.earned>0)?9:0;
 if(!S.v3){S.v3=1;S.eq.model=1;(S.owned.model=S.owned.model||[]).push(1);save();}}
 function addCost(cost,qty,id,n,unit){const o=Math.max(0,qty[id]||0);if(n<=0)return;const base=(cost[id]>0?cost[id]:PMAP[id].buy);cost[id]=(base*o+unit*n)/(o+n);}
 const unitCost=(cost,id)=>cost[id]>0?cost[id]:PMAP[id].buy;
@@ -7515,7 +7530,7 @@ function spotW(s){const t=turfAt(s.x,s.z);return (t&&ownedTurf(t.id))?3.5:inHZ(s
 function spawnCustomer(){const free=SPOTS.filter(s=>{if(s.busy||dist(s,car)<30)return false;const t=turfAt(s.x,s.z);return !t||ownedTurf(t.id);});if(!free.length)return;
  let sw=0;for(const f of free)sw+=spotW(f);let rr=rnd()*sw,s=free[0];for(const f of free){rr-=spotW(f);if(rr<=0){s=f;break;}}
  const w=weightsFor(s);let tot=w.reduce((a,b)=>a+b,0),r=rnd()*tot,pi=0;for(;pi<w.length;pi++){r-=w[pi];if(r<=0)break;}
- const p=PRODUCTS[Math.min(pi,PRODUCTS.length-1)];const big=rnd()<(inHZ(s.x,s.z)?.3:.15);const qty=(1+((rnd()*(p.buy>=250?2:3))|0))*(big?3:1);
+ const p=tutPick(PRODUCTS[Math.min(pi,PRODUCTS.length-1)]);const big=rnd()<(inHZ(s.x,s.z)?.3:.15);const qty=tutQty(p,(1+((rnd()*(p.buy>=250?2:3))|0))*(big?3:1));
  const unit=p.sell[0]+rnd()*(p.sell[1]-p.sell[0]);const price=Math.round(unit*qty*(s.type==='Alley'?1.15:1)/5)*5;
  const g=new THREE.Group();g.position.set(s.x,0,s.z);g.rotation.y=rnd()*6.28;
  const ch=null,lz=HASCHARS?{key:CHKEYS[(rnd()*CHKEYS.length)|0],clip:'Idle'}:null;
@@ -8151,6 +8166,36 @@ function raidArrow(t){const $=$h,el=$('raidArrow');
   $('raTxt').textContent=`🎯 DEFEND ${tg.name.toUpperCase()} · ${raid.raiders.length} LEFT`;}
  else{const rel=wrapA(Math.atan2(tg.x-car.x,tg.z-car.z)-car.heading);$('raArr').style.transform=`rotate(${-rel}rad) scale(${1+Math.sin(t/150)*.08})`;
   $('raTxt').textContent=`⚠ RAID · ${tg.name.toUpperCase()} · ${Math.round(d-TURF_R)}m`;}}
+/* ================= FIRST-TIME TUTORIAL (buy first product → make first sale) ================= */
+function tutOn(){return !!S&&S.tut!=null&&S.tut<9;}
+function tutPick(p){if(!tutOn())return p;const held=PRODUCTS.filter(q=>(S.inv[q.id]|0)>0);if(!held.length)return p;
+ if(customers.some(c=>!c.skip&&S.inv[c.p.id]>=c.qty))return p;return held[(rnd()*held.length)|0];}
+function tutQty(p,q){if(!tutOn())return q;const h=S.inv[p.id]|0;return h>0?Math.max(1,Math.min(q,h)):q;}
+var tutEnd=0;
+function tutDone(){S.tut=9;save();tutEnd=performance.now()+7000;const g=id=>document.getElementById(id);
+ g('tutStep').textContent='🔥 FIRST SALE · TUTORIAL COMPLETE';g('tutMsg').innerHTML='That\'s the hustle — buy low at the Stash House, sell to buyers. Stack cash for the <b>Garage</b> (speed, looks), <b>Gun Shop</b> and <b>turf</b>. Alleys pay more · bus stops bring heat.';
+ g('tutSkip').style.display='none';g('tutBox').classList.remove('inpanel');g('tutBox').classList.remove('hidden');g('tutArrow').classList.add('hidden');}
+document.getElementById('tutSkip').addEventListener('click',()=>{S.tut=9;save();document.getElementById('tutBox').classList.add('hidden');document.getElementById('tutArrow').classList.add('hidden');toast('Tutorial skipped · Stash House = buy · buyers = sell','#39ff14');});
+function tutTick(t){const g=id=>document.getElementById(id),box=g('tutBox'),ar=g('tutArrow');
+ if(S&&S.tut>=9){ar.classList.add('hidden');if(tutEnd&&performance.now()<tutEnd){box.classList.toggle('dim',g('toast').classList.contains('show'));return;}box.classList.add('hidden');return;}
+ if(!tutOn()||!running||seaMode||heliMode||raid||document.querySelector('.overlay:not(.hidden)')){box.classList.add('hidden');ar.classList.add('hidden');return;}
+ if(S.tutD==null)S.tutD=S.deals;if(S.deals>S.tutD){tutDone();return;}
+ let step=1,msg='',tg=null,lbl='';
+ if(invTotal()<=0){
+  if(panelMode==='stash'){step=2;msg='Buy your first product — tap <b>+5</b> on <b style="color:#3ddc84">Green</b>. It\'s cheap and buyers always want it.';const b=document.querySelector('#pbody [data-buy="green"][data-q="5"]');if(b&&!b.classList.contains('tutGlow'))b.classList.add('tutGlow');}
+  else if(panelMode){msg='Tap <b>DRIVE ▸</b>, then head to the green <b>STASH HOUSE</b>.';}
+  else{msg='Follow the green arrow to the <b>STASH HOUSE</b> ring and stop inside it.';tg=STASH;lbl='🏠 STASH HOUSE';}}
+ else if(panelMode){step=3;msg='Loaded up! Tap <b>DRIVE ▸</b> to hit the streets.';}
+ else if(curDeal&&S.inv[curDeal.p.id]>=curDeal.qty){step=4;msg='They want what you\'ve got — tap <b>SELL</b> to get paid.';}
+ else{step=3;let best=null,bd=1e9;for(const c of customers){if(c.skip||S.inv[c.p.id]<c.qty)continue;const d=dist(c,car);if(d<bd){bd=d;best=c;}}
+  if(curDeal)msg='This buyer wants something else — tap <b>PASS</b> and follow the arrow.';
+  else if(best){tg=best;lbl='💵 BUYER · '+best.p.name.toUpperCase();msg='Follow the arrow to a buyer whose <b>diamond color</b> matches your product, then <b>stop next to them</b>.';}
+  else msg='Cruise the streets — a buyer for your product will pop up soon (floating diamonds).';}
+ g('tutStep').textContent=`TUTORIAL · STEP ${step}/4`;if(g('tutMsg').innerHTML!==msg)g('tutMsg').innerHTML=msg;g('tutSkip').style.display='';
+ box.classList.toggle('inpanel',!!panelMode);box.classList.toggle('dim',!panelMode&&g('toast').classList.contains('show'));box.classList.remove('hidden');
+ const raidShown=!g('raidArrow').classList.contains('hidden');
+ if(tg&&!panelMode&&!raidShown&&dist(car,tg)>7){const rel=wrapA(Math.atan2(tg.x-car.x,tg.z-car.z)-car.heading);g('tutArr').style.transform=`rotate(${-rel}rad) scale(${1+Math.sin(t/150)*.08})`;g('tutLbl').textContent=`${lbl} · ${Math.round(dist(car,tg))}m`;ar.classList.remove('hidden');}
+ else ar.classList.add('hidden');}
 /* ================= CAR UPDATE ================= */
 let shake=0;
 function updateCar(dt){const st=stats();const fwd=keys.up,back=keys.down;const steerIn=(keys.left?1:0)-(keys.right?1:0);
@@ -8479,7 +8524,7 @@ function loop(t){requestAnimationFrame(loop);if(SHD)SHD.frame(t);const cap=panel
  if(heliMode)heliVisual(dt,t);else updateCarVisual(running&&!paused?dt:0);bzFrame(dt,t);heliTick(dt,t);updateSnow(dt);if(heliMode)heliCam(dt);else updateCamera(dt);
  try{for(const c of customers){c.mk.rotation.y+=dt*2;c.mk.position.y=3.4+Math.sin(t/300+c.ph)*.25;}
  for(const m of MARKERS){m.ring.material.opacity=.6+Math.sin(t/250)*.3;m.lb.position.y=10+Math.sin(t/500)*.4;}}catch(e){dErr('anim',e);}
- hud(dt);raidArrow(t);if(Q>1||mapF%2===0)drawMap(t);audioTick(t);
+ hud(dt);raidArrow(t);tutTick(t);if(Q>1||mapF%2===0)drawMap(t);audioTick(t);
  SKY.position.copy(camera.position);moon.position.set(car.x-70,140,car.z-50);moon.target.position.set(car.x,0,car.z);
  if(running&&!paused){fpsN++;fpsAcc+=dt;if(fpsAcc>=1){const fps=fpsN/fpsAcc;fpsN=0;fpsAcc=0;
   if(!manualQ&&Q>1&&fps<(TOUCHQ?24:32)){if(++lowT>=3){lowT=0;Q--;applyQ();toast('Graphics lowered for smoother play · tap '+$('qBtn').textContent+' to change','#9eefff');}}else lowT=0;}}
